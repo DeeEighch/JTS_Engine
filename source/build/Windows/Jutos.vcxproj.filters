@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\Main.cpp" />
+    <ClCompile Include="..\..\engine\core\Core.cpp">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\platform\windows\PlatformUtils.cpp">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\platform\windows\MainWindow.cpp">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\Utils.cpp">
+      <Filter>JTS_Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="JTS_Engine">
+      <UniqueIdentifier>{e399782f-efae-4980-87b9-f8b159535dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{b1c4ea67-f21e-42ef-b933-4fdafe401e1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JTS_Engine\Core">
+      <UniqueIdentifier>{b8cbaac0-8b37-4abc-bc75-948ee84b2eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JTS_Engine\Platform">
+      <UniqueIdentifier>{d1b51097-28ee-40c4-8429-6504e208d56b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\engine\JTS_Eng.h">
+      <Filter>JTS_Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\platform\PlatformAPI.h">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\core\FuncDelegate.h">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\stdafx.h">
+      <Filter>JTS_Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\core\Core.h">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\platform\windows\MainWindow.h">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\Utils.h">
+      <Filter>JTS_Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
