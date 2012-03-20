@@ -14,6 +14,12 @@
     <ClCompile Include="..\..\engine\Utils.cpp">
       <Filter>JTS_Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\platform\windows\Render.cpp">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\externs\glew\glew.c">
+      <Filter>Externs\Glew</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="JTS_Engine">
@@ -27,6 +33,15 @@
     </Filter>
     <Filter Include="JTS_Engine\Platform">
       <UniqueIdentifier>{d1b51097-28ee-40c4-8429-6504e208d56b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs">
+      <UniqueIdentifier>{7adebcea-6871-4168-a50f-0feec3f20772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs\Glew">
+      <UniqueIdentifier>{da4b0bd7-8778-45f3-846c-b535500d80a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs\Glew\GL">
+      <UniqueIdentifier>{160a25d0-320b-4b4b-a247-3bba1048e65a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +65,15 @@
     </ClInclude>
     <ClInclude Include="..\..\engine\Utils.h">
       <Filter>JTS_Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\platform\windows\Render.h">
+      <Filter>JTS_Engine\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\externs\glew\GL\wglew.h">
+      <Filter>Externs\Glew\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\externs\glew\GL\glew.h">
+      <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

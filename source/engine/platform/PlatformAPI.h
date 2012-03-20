@@ -15,6 +15,7 @@
 		virtual HRESULT ConfigureWindow(uint uiResX, uint uiResY, bool bFScreen) = 0;
 		virtual HRESULT SetCaption(const char *pcTxt) = 0;
 		virtual	HRESULT SendMessage(const TWinMessage &stMsg) = 0;
+		virtual HRESULT GetWindowHandle(TWindowHandle& result) = 0;
 		virtual HRESULT BeginMainLoop() = 0;
 		virtual HRESULT KillWindow() = 0;
 		virtual HRESULT Free() = 0;
@@ -36,7 +37,7 @@
 	void EngMsgToWinAPIMsg(const TWinMessage &msg, UINT &Msg, WPARAM &wParam, LPARAM &lParam);
 #endif
 
-	uint32 GetPerfTimer();
+	uint64 GetPerfTimer();
 	void GetLocalTimaAndDate(TSysTimeAndDate &time);
 	void GetDisplaySize(uint &width, uint &height);
 	void ShowModalUserAlert(const char *pcTxt, const char *pcCaption);

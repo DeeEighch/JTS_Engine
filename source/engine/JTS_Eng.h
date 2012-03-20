@@ -51,6 +51,9 @@ namespace JTS
 	typedef __int64				int64;
 	typedef unsigned __int64	uint64;
 
+	//platform dependent window hanle
+	typedef HWND				TWindowHandle;
+	
 #else//PLATFORM_WINDOWS
 
 	#define CALLBACK
@@ -244,7 +247,29 @@ namespace JTS
 		*/
 		virtual	HRESULT CALLBACK AddToLog(const char *pcTxt, bool bError = false) = 0;
 	};
-
+	
+	// {2363509D-BFB4-448E-89EE-B1E8EFCC1D41}
+	static const GUID IID_IRender =
+	{ 0x2363509d, 0xbfb4, 0x448e, { 0x89, 0xee, 0xb1, 0xe8, 0xef, 0xcc, 0x1d, 0x41 } };
+	
+	/** Engine render interface
+	*/
+	class IRender : public IJTS_Base
+	{
+	public:
+		/** Initializes render. Responsible for platform dependent render API initialization
+		*/
+		virtual HRESULT CALLBACK Initialize() = 0;
+		/** Finilizes render.
+		*/
+		virtual HRESULT CALLBACK Finalize() = 0;
+		/** Prepares render for drawing new frame
+		*/
+		virtual HRESULT CALLBACK StartFrame() = 0;
+		/** Finalizes frame drawing
+		*/
+		virtual HRESULT CALLBACK EndFrame() = 0;
+	};
 }
 
 	/** Returns pointer to main engine class. If class is not created, also creates it.

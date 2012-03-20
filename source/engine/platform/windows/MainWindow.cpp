@@ -127,6 +127,13 @@ HRESULT CMainWindow::SendMessage(const TWinMessage &stMsg)
 	return S_OK;
 }
 
+HRESULT CMainWindow::GetWindowHandle(TWindowHandle& result)
+{
+	result = _hWnd;
+	return S_OK;
+}
+
+
 HRESULT CMainWindow::BeginMainLoop()
 {
 	return _wWinMain(GetModuleHandle(NULL)) != -1 ? S_OK : E_FAIL;

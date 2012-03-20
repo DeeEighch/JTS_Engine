@@ -1,5 +1,6 @@
 #include "Core.h"
 #include "MainWindow.h"
+#include "Render.h"
 
 CCore *pCore = NULL;
 
@@ -36,10 +37,17 @@ _uiProcessInterval(33)
 	_clDelMProc.Add(&_s_MessageProc, this);
 
 	_pMainWindow = new CMainWindow(this);
+	
+	TWindowHandle window_handle;
+	_pMainWindow->GetWindowHandle(window_handle);
+	
+	_pRender = new CRender(this,window_handle);
 }
 
 CCore::~CCore()
 {
+	_pRender->Finalize();
+	
 	_pMainWindow->Free();
 
 	if (_clLogFile.is_open())
@@ -57,8 +65,8 @@ void CCore::_MainLoop()
 		return;
 	}
 
-	uint32 time			= GetPerfTimer()/1000;
-	uint32 time_delta	= time - _ui32TimeOld;
+	uint64 time			= GetPerfTimer()/1000;
+	uint64 time_delta	= time - _ui64TimeOld;
 
 	bool flag = false;
 
@@ -73,9 +81,11 @@ void CCore::_MainLoop()
 	}
 
 	if (flag)
-		_ui32TimeOld = time - time_delta % _uiProcessInterval;
+		_ui64TimeOld = time - time_delta % _uiProcessInterval;
 	
+	_pRender->StartFrame();
 	_clDelRender.Invoke();
+	_pRender->EndFrame();
 }
 
 void CCore::_MessageProc(const TWinMessage &stMsg)
@@ -135,9 +145,12 @@ HRESULT CALLBACK CCore::InitializeEngine(uint uiResX, uint uiResY, const char* p
 		if ( (eInitFlags & EIF_NATIVE_RESOLUTION) && (eInitFlags & EIF_FULL_SCREEN))
 			GetDisplaySize(uiResX, uiResY);
 
+		if (FAILED(_pRender->Initialize()))
+			return E_ABORT;
+			
 		if (FAILED(_pMainWindow->ConfigureWindow(uiResX, uiResY, eInitFlags & EIF_FULL_SCREEN)))
 			return E_ABORT;
-
+		
 		_pMainWindow->SetCaption(pcApplicationName);
 
 		AddToLog("Engine initialized.");
@@ -149,7 +162,7 @@ HRESULT CALLBACK CCore::InitializeEngine(uint uiResX, uint uiResY, const char* p
 			AddToLog("Done.");
 		}
 
-		_ui32TimeOld = GetPerfTimer()/1000 - _uiProcessInterval;
+		_ui64TimeOld = GetPerfTimer()/1000 - _uiProcessInterval;
 
 		return _pMainWindow->BeginMainLoop();
 	}

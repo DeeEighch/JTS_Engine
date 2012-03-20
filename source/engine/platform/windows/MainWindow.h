@@ -25,6 +25,7 @@ public:
 	HRESULT InitWindow(TProcDelegate *pDelMainLoop, TMsgProcDelegate *pDelMsgProc);
 	HRESULT ConfigureWindow(uint uiResX, uint uiResY, bool bFScreen);
 	HRESULT SendMessage(const TWinMessage &stMsg);
+	HRESULT GetWindowHandle(TWindowHandle& result);
 	HRESULT SetCaption(const char *pcTxt);
 	HRESULT BeginMainLoop();
 	HRESULT KillWindow();

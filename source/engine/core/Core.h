@@ -14,9 +14,10 @@ class CCore : public IEngineCore
 	fstream				_clLogFile;
 	
 	IMainWindow			*_pMainWindow;
-
+	IRender				*_pRender;
+	
 	uint				_uiProcessInterval;
-	uint32				_ui32TimeOld;
+	uint64				_ui64TimeOld;
 
 	bool _bDoExit;
 

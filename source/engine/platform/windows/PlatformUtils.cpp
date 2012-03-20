@@ -220,12 +220,12 @@ void EngMsgToWinAPIMsg(const TWinMessage &msg, UINT &Msg, WPARAM &wParam, LPARAM
 	}
 }
 
-uint32 GetPerfTimer()
+uint64 GetPerfTimer()
 {
 	LARGE_INTEGER perf_counter, perf_freq;
 	QueryPerformanceFrequency(&perf_freq);
 	QueryPerformanceCounter(&perf_counter);
-	return (DWORD)(1000000*perf_counter.QuadPart/perf_freq.QuadPart);
+	return (1000000*perf_counter.QuadPart/perf_freq.QuadPart);
 }
 
 void GetLocalTimaAndDate(TSysTimeAndDate &time)
