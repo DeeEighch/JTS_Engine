@@ -65,8 +65,6 @@ void CInput::_GetInputClientRect(int32 &l, int32 &r, int32 &t, int32 &b)
 	RECT rect;
 	GetClientRect(_hWnd, &rect);
 
-	//	GetWindowRect(_hWnd, &rect);
-
 	POINT lt, rb;
 	
 	lt.x = rect.left;
@@ -81,20 +79,6 @@ void CInput::_GetInputClientRect(int32 &l, int32 &r, int32 &t, int32 &b)
 	r = rb.x;
 	t = lt.y;
 	b = rb.y;
-
-/*	int cx_frame, cy_bottom_frame, cy_top_frame;
-
-	if (rect.left + rect.top != 0) //check for fullscreen mode
-	{
-		cx_frame		=  GetSystemMetrics(SM_CYSIZEFRAME);
-		cy_bottom_frame =  GetSystemMetrics(SM_CXSIZEFRAME);
-		cy_top_frame	=  GetSystemMetrics(SM_CYCAPTION) + cy_bottom_frame;
-	}
-
-	l = rect.left + cx_frame;
-	r = rect.right - cx_frame;
-	t = rect.top + cy_top_frame;
-	b = rect.bottom - cy_bottom_frame;*/
 }
 
 void CInput::_Loop()
@@ -116,7 +100,7 @@ void CInput::_Loop()
 
 		if (p.x <= i_win_left)
 		{
-				p.x = i_win_right - 1;
+				p.x = i_win_right - 2;
 				_uiOldMouseX = i_win_right + _stMsts.iX - i_win_left;
 		}
 
@@ -128,7 +112,7 @@ void CInput::_Loop()
 
 		if (p.y <= i_win_top)
 		{		
-				p.y = i_win_bottom - 1;
+				p.y = i_win_bottom - 2;
 				_uiOldMouseY = i_win_bottom + _stMsts.iY - i_win_top;
 		}
 

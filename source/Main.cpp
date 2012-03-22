@@ -22,7 +22,7 @@ void CALLBACK Free (void *pParametr)
 void CALLBACK Process (void *pParametr)
 {
 	ui32Counter++;
-	
+
 	bool pressed;
 
 	pInput->GetKey(JTS::KEY_LEFT, pressed);

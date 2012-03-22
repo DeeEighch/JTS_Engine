@@ -177,8 +177,6 @@ bool CRender::Initialize()
 		return false;
 	}
 
-	wglMakeCurrent(_hDC, _hRC);
-
 	if (WGLEW_EXT_swap_control && _c_bVSync)
 		wglSwapIntervalEXT(1);
 
