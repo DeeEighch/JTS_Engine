@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "..\..\..\build\Windows\resource.h"
 
 CMainWindow::CMainWindow(IEngineCore *pEngineCore):
 _pEngineCore(pEngineCore),
@@ -78,12 +79,12 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *pDelMainLoop, TMsgProcDelegate *p
 	wcex.cbClsExtra     = 0;
 	wcex.cbWndExtra     = 0;
 	wcex.hInstance      = _hInst;
-	wcex.hIcon          = LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hIcon          = LoadIcon(_hInst, MAKEINTRESOURCE(IDI_ICON1));
 	wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground  = (HBRUSH)(0);
 	wcex.lpszMenuName   = NULL;
 	wcex.lpszClassName  = "JTSWindowClass";
-	wcex.hIconSm        = LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hIconSm        = LoadIcon(_hInst, MAKEINTRESOURCE(IDI_ICON1));
 
 	if (RegisterClassEx(&wcex) == FALSE)
 	{

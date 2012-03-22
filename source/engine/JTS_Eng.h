@@ -203,6 +203,8 @@ namespace JTS
 		EPT_FREE			/**< Procedure is called before engine quits. In this procedure you should release all resources and free memmory. */
 	};
 
+	class IInput;
+
 	// {111BB884-2BA6-4e84-95A5-5E4700309CBA}
 	static const GUID IID_IEngineCore = 
 	{ 0x111bb884, 0x2ba6, 0x4e84, { 0x95, 0xa5, 0x5e, 0x47, 0x0, 0x30, 0x9c, 0xba } };
@@ -246,41 +248,81 @@ namespace JTS
 		 \param[in] bError Is this an error and engine must be stopped?
 		*/
 		virtual	HRESULT CALLBACK AddToLog(const char *pcTxt, bool bError = false) = 0;
+		/** Get Input sub system.
+		 \param[out] pInput Pointer to IInput interface.
+		*/
+		virtual	HRESULT CALLBACK GetInput(IInput *&pInput) = 0;
 	};
 	
 	// {2363509D-BFB4-448E-89EE-B1E8EFCC1D41}
 	static const GUID IID_IRender =
 	{ 0x2363509d, 0xbfb4, 0x448e, { 0x89, 0xee, 0xb1, 0xe8, 0xef, 0xcc, 0x1d, 0x41 } };
 	
-	/** Engine render interface
+	/** Engine render interface.
 	*/
 	class IRender : public IJTS_Base
 	{
 	public:
-		/** Initializes render. Responsible for platform dependent render API initialization
-		*/
-		virtual HRESULT CALLBACK Initialize() = 0;
-		/** Finilizes render.
-		*/
-		virtual HRESULT CALLBACK Finalize() = 0;
-		/** Prepares render for drawing new frame
-		*/
-		virtual HRESULT CALLBACK StartFrame() = 0;
-		/** Finalizes frame drawing
-		*/
-		virtual HRESULT CALLBACK EndFrame() = 0;
 	};
-}
 
-	/** Returns pointer to main engine class. If class is not created, also creates it.
-		\param[out] pEngineCore Pointer to main engine interface. \see JTS::IEngineCore
-		\return Returns true if class was created inside library and false if already created class is returned.
+	/** Describes the state of the mouse. 
+		\see IInput
+	*/
+	struct TMouseStates
+	{
+		int	 iX;			/**< X coordinate of mouse pointer. */ 
+		int	 iY;			/**< Y coordinate of mouse pointer. */
+		int	 iDeltaX;		/**< The difference between the current and previous X coordinate value. */
+		int	 iDeltaY;		/**< The difference between the current and previous Y coordinate value. */
+		int	 iDeltaWheel;	/**< Mouse wheel offset. */
+		bool bLeftButton;	/**< Is mouse left button pressed. */
+		bool bRightButton;	/**< Is mouse right button pressed. */
+		bool bMiddleButton; /**< Is mouse middle button pressed. */
+	};
+
+	/** Flags to configure user input behaviour.
+	*/
+	enum E_INPUT_CONFIGURATION_FLAGS
+	{
+		ICF_DEFAULT					= 0x00000000, /**< Use default settings. */
+		ICF_EXCLUSIVE				= 0x00000001, /**< Mouse movment will be restricted by client area. */
+		ICF_HIDE_CURSOR				= 0x00000002, /**< Mouse hardware cursor will be hidden. */
+		ICF_CURSOR_BEYOND_SCREEN	= 0x00000004  /**< Mouse will move through window borders and then dropped to opposite border. */
+	};
+
+	enum E_KEYBOARD_KEY_CODES;
+
+	// {64DAAF7F-F92C-425f-8B92-3BE40D8C6666}
+	static const GUID IID_IInput = 
+	{ 0x64daaf7f, 0xf92c, 0x425f, { 0x8b, 0x92, 0x3b, 0xe4, 0xd, 0x8c, 0x66, 0x66 } };
+
+	/** Engine input interface.
+	*/
+	class IInput : public IJTS_Base
+	{
+	public:
+		/** Configures input subsystem behaviour.
+		 \param[in] eFlags Input configuration flags.
 		*/
-	extern bool GetEngine(JTS::IEngineCore *&pEngineCore);
-
-	/** Deletes main engine class. Must be called just before exeting application.
-		*/		
-	extern void FreeEngine();
+		virtual HRESULT CALLBACK Configure(E_INPUT_CONFIGURATION_FLAGS eFlags = ICF_DEFAULT) = 0;
+		/** Returnes the current state of the mouse.
+		 \param[out] stMStates Struct with current mouse states.
+		*/
+		virtual HRESULT CALLBACK GetMouseStates(TMouseStates &stMStates) const = 0;
+		/** Checks is the current key pressed.
+		 \param[in] eKeyCode Name of the key to be checked.
+		 \param[out] bPressed Is true when key is pressed.
+		*/
+		virtual HRESULT CALLBACK GetKey(E_KEYBOARD_KEY_CODES eKeyCode, bool &bPressed) const = 0;
+		/** Start grabbing user keyboard text input.
+		 \param[in] pcBuffer Allocated character buffer to store user input.
+		 \param[in] uiBufferSize Size of the buffer.
+		*/
+		virtual HRESULT CALLBACK BeginTextInput(char* pcBuffer, uint uiBufferSize) = 0;
+		/** Stop grabbing user input and copy result to buffer.
+		*/
+		virtual HRESULT CALLBACK EndTextInput() = 0;
+	};
 
 	/** Describes all keyboard key codes.
 		\warning This is not common ASCII key codes!
@@ -402,5 +444,16 @@ namespace JTS
 		KEY_NUMPADSLASH		= 0xB5,
 		KEY_NUMLOCK			= 0x45,
 	};
+}
+
+	/** Returns pointer to main engine class. If class is not created, also creates it.
+		\param[out] pEngineCore Pointer to main engine interface. \see JTS::IEngineCore
+		\return Returns true if class was created inside library and false if already created class is returned.
+		*/
+	extern bool GetEngine(JTS::IEngineCore *&pEngineCore);
+
+	/** Deletes main engine class. Must be called just before exeting application.
+		*/		
+	extern void FreeEngine();
 
 #endif //_JTS_ENG_H

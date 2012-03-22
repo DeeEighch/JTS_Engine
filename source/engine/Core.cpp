@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "MainWindow.h"
 #include "Render.h"
+#include "platform\windows\Input.h"
 
 CCore *pCore = NULL;
 
@@ -28,8 +29,8 @@ void FreeEngine()
 	}
 }
 
-
 CCore::CCore():
+_pInput(NULL),
 _bDoExit(false),
 _uiProcessInterval(33)
 {
@@ -37,17 +38,16 @@ _uiProcessInterval(33)
 	_clDelMProc.Add(&_s_MessageProc, this);
 
 	_pMainWindow = new CMainWindow(this);
-	
-	TWindowHandle window_handle;
-	_pMainWindow->GetWindowHandle(window_handle);
-	
-	_pRender = new CRender(this,window_handle);
+		
+	_pRender = new CRender(this);
 }
 
 CCore::~CCore()
 {
 	_pRender->Finalize();
 	
+	if (_pInput) delete _pInput;
+
 	_pMainWindow->Free();
 
 	if (_clLogFile.is_open())
@@ -55,6 +55,17 @@ CCore::~CCore()
 		_clLogFile << "Log Closed.";
 		_clLogFile.close();
 	}
+}
+
+TWindowHandle CCore::GetWindowHandle() const
+{
+	if (!_pMainWindow)
+		return NULL;
+
+	TWindowHandle window_handle;
+	_pMainWindow->GetWindowHandle(window_handle);
+
+	return window_handle;
 }
 
 void CCore::_MainLoop()
@@ -142,17 +153,19 @@ HRESULT CALLBACK CCore::InitializeEngine(uint uiResX, uint uiResY, const char* p
 
 	if (SUCCEEDED(_pMainWindow->InitWindow(&_clDelMLoop, &_clDelMProc)))
 	{
+		_pMainWindow->SetCaption(pcApplicationName);
+
+		_pInput = new CInput(this);
+
 		if ( (eInitFlags & EIF_NATIVE_RESOLUTION) && (eInitFlags & EIF_FULL_SCREEN))
 			GetDisplaySize(uiResX, uiResY);
 
-		if (FAILED(_pRender->Initialize()))
+		if (!_pRender->Initialize())
 			return E_ABORT;
 			
 		if (FAILED(_pMainWindow->ConfigureWindow(uiResX, uiResY, eInitFlags & EIF_FULL_SCREEN)))
 			return E_ABORT;
 		
-		_pMainWindow->SetCaption(pcApplicationName);
-
 		AddToLog("Engine initialized.");
 
 		if (!_clDelInit.IsNull()) 
@@ -255,4 +268,15 @@ HRESULT CALLBACK CCore::AddToLog(const char *pcTxt, bool bError)
 		}
 	}
 	return S_OK;
+}
+
+HRESULT CALLBACK CCore::GetInput(IInput *&pInput)
+{
+	if (!_pInput)
+		return E_ABORT;
+	else
+	{
+		pInput = _pInput;
+		return S_OK;
+	}
 }

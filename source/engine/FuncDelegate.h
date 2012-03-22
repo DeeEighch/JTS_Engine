@@ -46,7 +46,10 @@ public:
 	{
 		for (std::size_t i = 0; i < _funcList.size(); i++)
 			if (_funcList[i].pParametr == pParametr && _funcList[i].pFunc == pFunc)
+			{
 				_funcList.erase(_funcList.begin() + i);
+				break;
+			}
 	}
 
 	T2 Invoke;

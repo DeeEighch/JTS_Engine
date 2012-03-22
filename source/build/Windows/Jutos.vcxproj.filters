@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\Main.cpp" />
-    <ClCompile Include="..\..\engine\core\Core.cpp">
-      <Filter>JTS_Engine\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\engine\platform\windows\PlatformUtils.cpp">
       <Filter>JTS_Engine\Platform</Filter>
     </ClCompile>
@@ -14,11 +11,20 @@
     <ClCompile Include="..\..\engine\Utils.cpp">
       <Filter>JTS_Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\platform\windows\Render.cpp">
-      <Filter>JTS_Engine\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\externs\glew\glew.c">
       <Filter>Externs\Glew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\stdafx.cpp">
+      <Filter>JTS_Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\Core.cpp">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\Render.cpp">
+      <Filter>JTS_Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\platform\windows\Input.cpp">
+      <Filter>JTS_Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +49,12 @@
     <Filter Include="Externs\Glew\GL">
       <UniqueIdentifier>{160a25d0-320b-4b4b-a247-3bba1048e65a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JTS_Engine\Render">
+      <UniqueIdentifier>{0fa37aa8-8a70-4214-8dbd-f3cdad30cf90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JTS_Engine\Input">
+      <UniqueIdentifier>{81e9935d-c06e-4224-9176-434552b02de9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\JTS_Eng.h">
@@ -51,14 +63,8 @@
     <ClInclude Include="..\..\engine\platform\PlatformAPI.h">
       <Filter>JTS_Engine\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\core\FuncDelegate.h">
-      <Filter>JTS_Engine\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\engine\stdafx.h">
       <Filter>JTS_Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\engine\core\Core.h">
-      <Filter>JTS_Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\platform\windows\MainWindow.h">
       <Filter>JTS_Engine\Platform</Filter>
@@ -66,14 +72,30 @@
     <ClInclude Include="..\..\engine\Utils.h">
       <Filter>JTS_Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\platform\windows\Render.h">
-      <Filter>JTS_Engine\Platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\externs\glew\GL\wglew.h">
       <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\externs\glew\GL\glew.h">
       <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\engine\Core.h">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\FuncDelegate.h">
+      <Filter>JTS_Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\Render.h">
+      <Filter>JTS_Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\platform\windows\Input.h">
+      <Filter>JTS_Engine\Input</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.ico" />
   </ItemGroup>
 </Project>

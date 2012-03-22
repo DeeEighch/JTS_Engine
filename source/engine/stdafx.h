@@ -10,9 +10,15 @@ using namespace JTS;
 
 using namespace std;
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "PlatformAPI.h"
 #include "FuncDelegate.h"
 #include "Utils.h"
+
+#include <glew.h>
+#include <wglew.h>
 
 #ifdef JTS_USE_COM
 

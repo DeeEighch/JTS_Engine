@@ -35,11 +35,11 @@ TWinMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam)
 		return TWinMessage(WMT_SIZE, ((RECT*)lParam)->right - ((RECT*)lParam)->left, ((RECT*)lParam)->bottom - ((RECT*)lParam)->top, (RECT*)lParam);
 
 	case WM_SIZE:
-		RECT r;
+		RECT r, rc;
 		r.left = r.top = 0;
 		r.right = LOWORD(lParam);
 		r.bottom = HIWORD(lParam);
-
+		
 		if (wParam == SIZE_MINIMIZED)
 			return TWinMessage(WMT_MINIMIZED, r.right, r.bottom, &r);					
 		else

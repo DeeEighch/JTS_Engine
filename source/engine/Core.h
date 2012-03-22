@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 
+class CRender;
+class CInput;
+
 class CCore : public IEngineCore
 {
 	TProcDelegate		_clDelProcess,
@@ -14,8 +17,9 @@ class CCore : public IEngineCore
 	fstream				_clLogFile;
 	
 	IMainWindow			*_pMainWindow;
-	IRender				*_pRender;
-	
+	CRender				*_pRender;
+	CInput				*_pInput;
+
 	uint				_uiProcessInterval;
 	uint64				_ui64TimeOld;
 
@@ -32,12 +36,17 @@ public:
 	CCore();
 	~CCore();
 
+	inline	TMsgProcDelegate* pDMessageProc() {return &_clDelMProc;}
+	inline	TProcDelegate* pDMLoopProc() {return &_clDelMLoop;}
+	TWindowHandle GetWindowHandle() const;
+
 	HRESULT CALLBACK InitializeEngine(uint uiResX, uint uiResY, const char* pcApplicationName, E_ENGINE_INIT_FLAGS eInitFlags);
 	HRESULT CALLBACK SetProcessInterval(uint uiProcessInterval);	
 	HRESULT CALLBACK AddProcedure(E_ENGINE_PROCEDURE_TYPE eProcType, void (CALLBACK *pProc)(void *pParametr), void *pParametr);
 	HRESULT CALLBACK RemoveProcedure(E_ENGINE_PROCEDURE_TYPE eProcType, void (CALLBACK *pProc)(void *pParametr), void *pParametr);
 	HRESULT CALLBACK QuitEngine();
 	HRESULT CALLBACK AddToLog(const char *pcTxt, bool bError = false);
+	HRESULT CALLBACK GetInput(IInput *&pInput);
 
 	IJTS_BASE_IMPLEMENTATION(IEngineCore);
 };
