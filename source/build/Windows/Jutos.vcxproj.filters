@@ -14,9 +14,6 @@
     <ClCompile Include="..\..\externs\glew\glew.c">
       <Filter>Externs\Glew</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\stdafx.cpp">
-      <Filter>JTS_Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\engine\Core.cpp">
       <Filter>JTS_Engine\Core</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
     <ClInclude Include="..\..\engine\platform\PlatformAPI.h">
       <Filter>JTS_Engine\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\stdafx.h">
-      <Filter>JTS_Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\engine\platform\windows\MainWindow.h">
       <Filter>JTS_Engine\Platform</Filter>
     </ClInclude>
@@ -91,6 +85,7 @@
     <ClInclude Include="..\..\engine\platform\windows\Input.h">
       <Filter>JTS_Engine\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\engine\Common.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

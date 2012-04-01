@@ -1,7 +1,7 @@
 #ifndef _INPUT_H
 #define _INPUT_H
 
-#include "stdafx.h"
+#include "Common.h"
 #include "Core.h"
 
 class CCore;
@@ -27,7 +27,6 @@ class CInput: public IInput
 	int			 _uiOldMouseX, _uiOldMouseY;
 
 	void		 _ClipCursor();
-	void		 _GetInputClientRect(int32 &l, int32 &r, int32 &t, int32 &b);
 	void		 _MessageProc(const TWinMessage &stMsg);
 	void		 _Loop();
 	void		 _Process();

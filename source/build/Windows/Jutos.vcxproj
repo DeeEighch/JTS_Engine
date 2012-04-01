@@ -16,14 +16,12 @@
     <ClCompile Include="..\..\engine\platform\windows\MainWindow.cpp" />
     <ClCompile Include="..\..\engine\platform\windows\PlatformUtils.cpp" />
     <ClCompile Include="..\..\engine\Render.cpp" />
-    <ClCompile Include="..\..\engine\stdafx.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\engine\Utils.cpp" />
     <ClCompile Include="..\..\externs\glew\glew.c" />
     <ClCompile Include="..\..\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\engine\Common.h" />
     <ClInclude Include="..\..\engine\Core.h" />
     <ClInclude Include="..\..\engine\FuncDelegate.h" />
     <ClInclude Include="..\..\engine\JTS_Eng.h" />
@@ -31,7 +29,6 @@
     <ClInclude Include="..\..\engine\platform\windows\Input.h" />
     <ClInclude Include="..\..\engine\platform\windows\MainWindow.h" />
     <ClInclude Include="..\..\engine\Render.h" />
-    <ClInclude Include="..\..\engine\stdafx.h" />
     <ClInclude Include="..\..\engine\Utils.h" />
     <ClInclude Include="..\..\externs\glew\GL\glew.h" />
     <ClInclude Include="..\..\externs\glew\GL\wglew.h" />

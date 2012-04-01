@@ -32,7 +32,7 @@ void CRender::_MessageProc(const TWinMessage &stMsg)
 
 bool CRender::Initialize()
 {
-	_hWnd = _pCore->GetWindowHandle();
+	_pCore->GetWindow()->GetWindowHandle(_hWnd);
 
 	_hDC = GetDC(_hWnd);
 

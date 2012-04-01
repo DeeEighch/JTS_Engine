@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Common.h"
 
 TWinMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam)
 {

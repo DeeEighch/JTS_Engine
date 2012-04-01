@@ -1,7 +1,7 @@
 #ifndef _WINDOWAPI_H
 #define _WINDOWAPI_H
 
-#include "stdafx.h"
+#include "Common.h"
 
 class CMainWindow : public IMainWindow
 {
@@ -27,6 +27,7 @@ public:
 	HRESULT SendMessage(const TWinMessage &stMsg);
 	HRESULT GetWindowHandle(TWindowHandle& result);
 	HRESULT SetCaption(const char *pcTxt);
+	HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom);
 	HRESULT BeginMainLoop();
 	HRESULT KillWindow();
 	HRESULT Free();

@@ -16,6 +16,7 @@
 		virtual HRESULT SetCaption(const char *pcTxt) = 0;
 		virtual	HRESULT SendMessage(const TWinMessage &stMsg) = 0;
 		virtual HRESULT GetWindowHandle(TWindowHandle& result) = 0;
+		virtual HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) = 0;
 		virtual HRESULT BeginMainLoop() = 0;
 		virtual HRESULT KillWindow() = 0;
 		virtual HRESULT Free() = 0;
@@ -42,5 +43,6 @@
 	void GetDisplaySize(uint &width, uint &height);
 	void ShowModalUserAlert(const char *pcTxt, const char *pcCaption);
 	void Terminate();
+	void ClipCursorRect(int32 left = -1, int32 right = -1, int32 top = -1, int32 bottom = -1);
 
 #endif //_PLATFORMAPI_H

@@ -1,7 +1,7 @@
 #ifndef _RENDER_H
 #define _RENDER_H
 
-#include "stdafx.h"
+#include "Common.h"
 
 class CCore;
 

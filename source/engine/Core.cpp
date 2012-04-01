@@ -1,7 +1,7 @@
 #include "Core.h"
 #include "MainWindow.h"
 #include "Render.h"
-#include "platform\windows\Input.h"
+#include "Input.h"
 
 CCore *pCore = NULL;
 
@@ -46,7 +46,7 @@ CCore::~CCore()
 {
 	_pRender->Finalize();
 	
-	if (_pInput) delete _pInput;
+	delete _pInput;
 
 	_pMainWindow->Free();
 
@@ -57,15 +57,9 @@ CCore::~CCore()
 	}
 }
 
-TWindowHandle CCore::GetWindowHandle() const
+IMainWindow* CCore::GetWindow() const
 {
-	if (!_pMainWindow)
-		return NULL;
-
-	TWindowHandle window_handle;
-	_pMainWindow->GetWindowHandle(window_handle);
-
-	return window_handle;
+	return _pMainWindow;
 }
 
 void CCore::_MainLoop()
@@ -123,7 +117,6 @@ void CCore::_MessageProc(const TWinMessage &stMsg)
 		}
 
 		break;
-
 	}
 }
 

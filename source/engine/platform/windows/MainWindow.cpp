@@ -134,6 +134,31 @@ HRESULT CMainWindow::GetWindowHandle(TWindowHandle& result)
 	return S_OK;
 }
 
+HRESULT CMainWindow::GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom)
+{
+	if (!_hWnd)
+		return E_FAIL;
+
+	RECT rect;
+	::GetClientRect(_hWnd, &rect);
+
+	POINT lt, rb;
+	
+	lt.x = rect.left;
+	lt.y = rect.top;
+	rb.x = rect.right;
+	rb.y = rect.bottom;
+
+	ClientToScreen(_hWnd, &lt);
+	ClientToScreen(_hWnd, &rb);
+
+	left = lt.x;
+	right = rb.x;
+	top = lt.y;
+	bottom = rb.y;
+
+	return S_OK;
+}
 
 HRESULT CMainWindow::BeginMainLoop()
 {

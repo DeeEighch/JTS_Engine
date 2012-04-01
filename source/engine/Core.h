@@ -1,7 +1,7 @@
 #ifndef _CORE_H
 #define _CORE_H
 
-#include "stdafx.h"
+#include "Common.h"
 
 class CRender;
 class CInput;
@@ -38,7 +38,7 @@ public:
 
 	inline	TMsgProcDelegate* pDMessageProc() {return &_clDelMProc;}
 	inline	TProcDelegate* pDMLoopProc() {return &_clDelMLoop;}
-	TWindowHandle GetWindowHandle() const;
+	IMainWindow* GetWindow() const;
 
 	HRESULT CALLBACK InitializeEngine(uint uiResX, uint uiResY, const char* pcApplicationName, E_ENGINE_INIT_FLAGS eInitFlags);
 	HRESULT CALLBACK SetProcessInterval(uint uiProcessInterval);	

@@ -26,7 +26,7 @@ _clInputTxt("")
 	_bHideCursor			= true;
 	_bCurBeyond				= false;
 
-	_hWnd = _pCore->GetWindowHandle();
+	_pCore->GetWindow()->GetWindowHandle(_hWnd);
 
 	BYTE ANDmaskIcon[128], XORmaskIcon[128]; 
 
@@ -60,27 +60,6 @@ CInput::~CInput()
 	_pCore->AddToLog("Input Subsystem finalized.");
 }
 
-void CInput::_GetInputClientRect(int32 &l, int32 &r, int32 &t, int32 &b)
-{
-	RECT rect;
-	GetClientRect(_hWnd, &rect);
-
-	POINT lt, rb;
-	
-	lt.x = rect.left;
-	lt.y = rect.top;
-	rb.x = rect.right;
-	rb.y = rect.bottom;
-
-	ClientToScreen(_hWnd, &lt);
-	ClientToScreen(_hWnd, &rb);
-
-	l = lt.x;
-	r = rb.x;
-	t = lt.y;
-	b = rb.y;
-}
-
 void CInput::_Loop()
 {
 	if(_bExclusive && _bFocused && _bCurBeyond)
@@ -90,7 +69,7 @@ void CInput::_Loop()
 
 		int32 i_win_left, i_win_right, i_win_top, i_win_bottom;
 		
-		_GetInputClientRect(i_win_left, i_win_right, i_win_top, i_win_bottom);
+		_pCore->GetWindow()->GetClientRect(i_win_left, i_win_right, i_win_top, i_win_bottom);
 
 		if (p.x >= i_win_right - 1)
 		{
@@ -137,7 +116,7 @@ void CInput::_Process()
 void CInput::_ClipCursor()
 {
 	RECT rect;
-	_GetInputClientRect(rect.left, rect.right, rect.top, rect.bottom);
+	_pCore->GetWindow()->GetClientRect(rect.left, rect.right, rect.top, rect.bottom);
 	ClipCursor(&rect); 
 }
 
