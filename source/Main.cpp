@@ -1,5 +1,11 @@
 #include <JTS_Eng.h>
-#include <gl\GL.h> //Temp for testing purpose only!
+
+#ifdef PLATFORM_LINUX
+#include <stdio.h>
+#include <string.h>
+#endif
+
+#include <GL/gl.h> //Temp for testing purpose only!
 
 JTS::IEngineCore *pEngineCore = NULL;
 JTS::IInput *pInput = NULL;
@@ -50,8 +56,10 @@ void CALLBACK Render (void *pParametr)
 }
 
 #ifdef PLATFORM_WINDOWS
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+#else
+int main(int argc, char **argv)
+#endif
 {
 	if (GetEngine(pEngineCore))
 	{
@@ -61,20 +69,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		pEngineCore->AddProcedure(JTS::EPT_RENDER, &Render);
 
 		if (FAILED(pEngineCore->InitializeEngine(800, 600, "Jutos",
-			MessageBoxA(NULL, "Would you like to run in FullScreen mode?", "Start FullScreen?", MB_YESNO | MB_ICONQUESTION) == IDYES ? 
-			JTS::E_ENGINE_INIT_FLAGS(JTS::EIF_FULL_SCREEN | JTS::EIF_NATIVE_RESOLUTION) : JTS::EIF_DEFAULT
+#ifdef PLATFORM_WINDOWS
+			MessageBoxA(NULL, "Would you like to run in FullScreen mode?", "Start FullScreen?", MB_YESNO | MB_ICONQUESTION) == IDYES
+#else
+            argc > 1 && (strcmp(argv[1], "--fscreen") == 0 || strcmp(argv[1], "-f") == 0)
+#endif
+			? JTS::E_ENGINE_INIT_FLAGS(JTS::EIF_FULL_SCREEN | JTS::EIF_NATIVE_RESOLUTION) : JTS::EIF_DEFAULT
 			)))
 			pEngineCore->AddToLog("Failed to initialize engine!", true);
 
 		FreeEngine();
-		
+
 		return 0;
 	}
 	else
 	{
+#ifdef PLATFORM_WINDOWS
 		MessageBoxA(NULL, "Failed to load JTS engine!", "Jutos", MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_SYSTEMMODAL);
-		return 1;
+#else
+        fprintf(stderr, "Error: Failed to load JTS engine!\n");
+#endif
+	return 1;
 	}
 }
-
-#endif

@@ -2,6 +2,7 @@
 #define _UTILS_H
 
 #include <string>
+#include <stdio.h>
 #include <JTS_Eng.h>
 
 using namespace std;

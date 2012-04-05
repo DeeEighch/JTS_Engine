@@ -16,9 +16,23 @@ using namespace std;
 #include "PlatformAPI.h"
 #include "FuncDelegate.h"
 #include "Utils.h"
+#include <GL/glew.h>
 
-#include <glew.h>
-#include <wglew.h>
+#if defined(PLATFORM_WINDOWS)
+
+#include <GL/wglew.h>
+
+#elif defined(PLATFORM_LINUX)
+
+#include <GL/glxew.h>
+#include <X11/keysym.h>
+#include <X11/extensions/Xrandr.h>
+#include <X11/extensions/xf86vmode.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <string.h>
+
+#endif
 
 #ifdef JTS_USE_COM
 
@@ -91,7 +105,7 @@ using namespace std;
 		return S_OK;\
 	}
 
-#define IUNKNOWN_IMPLEMENTATION(interface_name) 
+#define IUNKNOWN_IMPLEMENTATION(interface_name)
 #endif
 
 #endif //_STDAFX_H

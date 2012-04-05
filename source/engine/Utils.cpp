@@ -1,5 +1,5 @@
 ﻿#include "Utils.h"
-
+/*
 //-----------------------------------------------------------------------
 string ToLowerCase(string &inString)
 {
@@ -44,7 +44,7 @@ int CountOfSens(string what, string where)
 {
 	if(what==where) return 1;
 	if(what.length()>where.length()) return 0;
-	
+
 	size_t prePos=0;
 	int count=-1;
 	do
@@ -70,7 +70,7 @@ bool TpltSearchStrSens(string what, string where)
 	part=what.substr(0, SearchStrSens("*", what, starnum));
 	pos=SearchStrSens("*", what, starnum);
 	if (SearchStrSens(part, where)<0) return false;
-	
+
 	while(1)
 	{
 		if (SearchStrSens("*", what, starnum+1)<0) break;
@@ -107,7 +107,7 @@ bool TpltSearchStrSens(string what, string where)
 			i++;
 		}
 return true;
-}	
+}
 //-----------------------------------------------------------------------
 //Searching substring in string
 //Function return position of substring "what" in string "where"
@@ -117,7 +117,7 @@ int SearchStr(string what, string where, int num, int after)
 {
 	what=ToLowerCase(what);
 	where=ToLowerCase(where);
-	
+
 	return SearchStrSens(what, where, num, after);
 }
 
@@ -125,8 +125,8 @@ int SearchStr(string what, string where, int num, int after)
 int CountOf(string what, string where)
 {
 	what=ToLowerCase(what);
-	where=ToLowerCase(where);	
-	
+	where=ToLowerCase(where);
+
 	return CountOfSens(what, where);
 }
 
@@ -135,7 +135,7 @@ bool TpltSearchStr(string what, string where)
 {
 	what=ToLowerCase(what);
 	where=ToLowerCase(where);
-	
+
 	return TpltSearchStrSens(what, where);
 }
 //-----------------------------------------------------------------------
@@ -175,14 +175,14 @@ string Int64ToStr(int64 val)
 	sprintf_s(res, "%I64d", val);
 	return string(res);
 }
-
+*/
 string IntToStr(int val)
 {
 	char res[16];
-	sprintf_s(res, "%d", val);
+	sprintf(res, "%d", val);
 	return string(res);
 }
-
+/*
 string UInt64ToStr(uint64 val)
 {
 	char res[16];
@@ -226,21 +226,21 @@ string BoolToStr(bool val)
 string GetFilePath(const char *name)
 {
 	string path(name);
-	
-	if (path.empty()) 
+
+	if (path.empty())
 		return string("");
-	
-	if (path[path.length() - 1] == '\\' || path[path.length() - 1] == '/') 
+
+	if (path[path.length() - 1] == '\\' || path[path.length() - 1] == '/')
 		path.erase(path.length() - 1);
 
 	size_t pos = path.find_last_of("\\/");
-	
+
 	if (pos != string::npos)
 	{
 		path.erase(pos);
 		return path;
 	}
-	else 
+	else
 		return string("");
 }
 
@@ -277,7 +277,7 @@ void TinyXmlStringToString(string &strDestination, const string &strTinyXml)
 	wchar_t *wcString = new wchar_t [lenghtText+1];
 	MultiByteToWideChar(CP_UTF8, 0, strTinyXml.c_str(), -1, wcString, lenghtText);
 	wcString[lenghtText] = '\0';
-		
+
 	char *cString = new char [lenghtText+1];
 	WideCharToMultiByte (CP_ACP, 0, wcString, -1, cString, lenghtText,  NULL, NULL);
 	cString[lenghtText] = '\0';
@@ -286,7 +286,7 @@ void TinyXmlStringToString(string &strDestination, const string &strTinyXml)
 
 	delete cString;
 	delete wcString;
-}
+}*/
 //-----------------------------------------------------------------------
 uchar EngKeyToASCIIKey(const uint8 key)
 {
@@ -297,10 +297,10 @@ uchar EngKeyToASCIIKey(const uint8 key)
 		case KEY_GRAVE         : return 192;
 		case KEY_CAPSLOCK	   : return 20;
 		case KEY_BACKSPACE	   : return 8;
-		case KEY_RETURN        : return 13;	
+		case KEY_RETURN        : return 13;
 		case KEY_SPACE         : return 32;
 		case KEY_SLASH         : return 191;
-		case KEY_BACKSLASH     : return 220; 
+		case KEY_BACKSLASH     : return 220;
 
 		case KEY_SYSRQ         : return 44;
 		case KEY_SCROLL        : return 145;
@@ -313,10 +313,10 @@ uchar EngKeyToASCIIKey(const uint8 key)
 		case KEY_PGUP          : return 33;
 		case KEY_PGDN          : return 34;
 
-		case KEY_LSHIFT        : return 16; 
+		case KEY_LSHIFT        : return 16;
 		case KEY_RSHIFT        : return 16;
 		case KEY_LALT		   : return 18;
-		case KEY_RALT          : return 18; 
+		case KEY_RALT          : return 18;
 		case KEY_LCONTROL      : return 17;
 		case KEY_RCONTROL      : return 17;
 
@@ -358,7 +358,7 @@ uchar EngKeyToASCIIKey(const uint8 key)
 		case KEY_U             : return 85;
 		case KEY_I             : return 73;
 		case KEY_O             : return 79;
-		case KEY_P             : return 80; 
+		case KEY_P             : return 80;
 		case KEY_A             : return 65;
 		case KEY_S             : return 83;
 		case KEY_D             : return 68;
@@ -379,10 +379,10 @@ uchar EngKeyToASCIIKey(const uint8 key)
 		case KEY_MINUS         : return 189;
 		case KEY_PLUS          : return 187;
 		case KEY_LBRACKET      : return 219;
-		case KEY_RBRACKET      : return 221; 
+		case KEY_RBRACKET      : return 221;
 
 		case KEY_SEMICOLON     : return 186;
-		case KEY_APOSTROPHE    : return 222; 
+		case KEY_APOSTROPHE    : return 222;
 
 		case KEY_COMMA         : return 188;
 		case KEY_PERIOD        : return 190;
@@ -404,7 +404,7 @@ uchar EngKeyToASCIIKey(const uint8 key)
 		case KEY_NUMPADSLASH   : return 111;
 		case KEY_NUMLOCK       : return 144;
 		default : return 0;
-	}	
+	}
 }
 //-----------------------------------------------------------------------
 uint8 ASCIIKeyToEngKey(const uchar key)
@@ -416,10 +416,10 @@ uint8 ASCIIKeyToEngKey(const uchar key)
 		case 192            : return KEY_GRAVE;
 		case 20	            : return KEY_CAPSLOCK;
 		case 8	            : return KEY_BACKSPACE;
-		case 13             : return KEY_RETURN;	
+		case 13             : return KEY_RETURN;
 		case 32             : return KEY_SPACE;
 		case 191            : return KEY_SLASH;
-		case 220            : return KEY_BACKSLASH; 
+		case 220            : return KEY_BACKSLASH;
 
 		case 44             : return KEY_SYSRQ;
 		case 145            : return KEY_SCROLL;
@@ -474,7 +474,7 @@ uint8 ASCIIKeyToEngKey(const uchar key)
 		case 85             : return KEY_U;
 		case 73             : return KEY_I;
 		case 79             : return KEY_O;
-		case 80             : return KEY_P; 
+		case 80             : return KEY_P;
 		case 65             : return KEY_A;
 		case 83             : return KEY_S;
 		case 68             : return KEY_D;
@@ -495,10 +495,10 @@ uint8 ASCIIKeyToEngKey(const uchar key)
 		case 189            : return KEY_MINUS;
 		case 187            : return KEY_PLUS;
 		case 219            : return KEY_LBRACKET;
-		case 221            : return KEY_RBRACKET; 
+		case 221            : return KEY_RBRACKET;
 
 		case 186            : return KEY_SEMICOLON;
-		case 222            : return KEY_APOSTROPHE; 
+		case 222            : return KEY_APOSTROPHE;
 
 		case 188            : return KEY_COMMA;
 		case 190            : return KEY_PERIOD;
@@ -520,5 +520,5 @@ uint8 ASCIIKeyToEngKey(const uchar key)
 		case 111            : return KEY_NUMPADSLASH;
 		case 144            : return KEY_NUMLOCK;
 		default : return 0;
-	}	
+	}
 }

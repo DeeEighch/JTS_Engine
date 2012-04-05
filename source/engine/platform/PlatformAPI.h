@@ -5,7 +5,7 @@
 #include "FuncDelegate.h"
 
 	// {0D3C63FA-D14B-4190-BFB6-92F611506171}
-	static const GUID IID_IMainWindow = 
+	static const GUID IID_IMainWindow =
 	{ 0xd3c63fa, 0xd14b, 0x4190, { 0xbf, 0xb6, 0x92, 0xf6, 0x11, 0x50, 0x61, 0x71 } };
 
 	class IMainWindow
@@ -33,16 +33,18 @@
 		uint16 ui16Milliseconds;
 	};
 
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
 	TWinMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam);
 	void EngMsgToWinAPIMsg(const TWinMessage &msg, UINT &Msg, WPARAM &wParam, LPARAM &lParam);
+#elif defined(PLATFORM_LINUX)
+    TWinMessage XEventToEngMsg(const XEvent &event);
+	XEvent EngMsgToXEvent(const TWinMessage &msg);
 #endif
 
 	uint64 GetPerfTimer();
 	void GetLocalTimaAndDate(TSysTimeAndDate &time);
 	void GetDisplaySize(uint &width, uint &height);
-	void ShowModalUserAlert(const char *pcTxt, const char *pcCaption);
+	void ShowModalUserAlert(const char *pcTxt, const char *pcCaption = "Jutos");
 	void Terminate();
-	void ClipCursorRect(int32 left = -1, int32 right = -1, int32 top = -1, int32 bottom = -1);
 
 #endif //_PLATFORMAPI_H

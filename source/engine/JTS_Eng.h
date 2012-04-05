@@ -16,69 +16,44 @@
 /** If defined, all structures in header will be aligne by 1 byte. */
 //#define STRUCT_ALIGNMENT_1
 
-#ifdef _WIN64
-#	pragma message("Target platform is WIN64.")
-#else //_WIN64
-#	pragma message("Target platform is WIN32.")
-#endif
+#elif defined(__linux__)
 
-#else//_WIN32 or _WIN64
+//Platform Linux//
+
+#include <X11/Xlib.h>
+
+/** Internal engine define, shows that target platform is Linux.*/
+#define PLATFORM_LINUX
+
+#else
 
 //Unknown platform//
 #error Unknown platform.
 
 #endif
 
-namespace JTS
-{
+#ifndef PLATFORM_WINDOWS
 
-	//signed//
-	typedef short int			int16;
-	typedef long int			int32;
-	typedef signed char			int8;
-	typedef wchar_t				wchar;
-	
-	//unsigned//
-	typedef unsigned int		uint;
-	typedef unsigned short int	uint16;
-	typedef unsigned long int	uint32;
-	typedef unsigned char		uint8;
-	typedef uint8				uchar;
+#   define CALLBACK
 
-	//int64//
-#if defined(PLATFORM_WINDOWS)
-
-	typedef __int64				int64;
-	typedef unsigned __int64	uint64;
-
-	//platform dependent window hanle
-	typedef HWND				TWindowHandle;
-	
-#else//PLATFORM_WINDOWS
-
-	#define CALLBACK
-
-	typedef signed long long	int64;
-	typedef unsigned long long	uint64;
-
-	/** Engine interface unique identifier. 
+	/** Engine interface unique identifier.
 		Every engine interface must have it's own GUID.
 	*/
 	struct GUID
 	{
-		ui32	Data1;
-		ui16	Data2;
-		ui16	Data3;
-		uint8	Data4[8];
+		unsigned long int	Data1;
+		unsigned short int	Data2;
+		unsigned short int	Data3;
+		unsigned char       Data4[8];
 	};
 
-	/** Default return type for all JTS methods. 
+	/** Default return type for all JTS methods.
 		Every engine interface method returnes HRESULT as result.
 		HRESULT must be one of these types S_OK, S_FALSE, E_FAIL, E_INVALIDARG or E_ABORT.
 		\note Engine suppresses a lot of errors and keeps all things stable, so it is not necessary to check every methods result.
 		\see SUCCEEDED, FAILED, CHECK_HR, PARANOIC_CHECK_HR, S_OK, S_FALSE, E_FAIL, E_INVALIDARG, E_ABORT
 	*/
-	typedef int32 HRESULT;
+	typedef long int HRESULT;
 
 //HRESULT return values//
 
@@ -109,6 +84,41 @@ namespace JTS
 
 #endif
 
+namespace JTS
+{
+
+	//signed//
+	typedef short int			int16;
+	typedef long int			int32;
+	typedef signed char			int8;
+	typedef wchar_t				wchar;
+
+	//unsigned//
+	typedef unsigned int		uint;
+	typedef unsigned short int	uint16;
+	typedef unsigned long int	uint32;
+	typedef unsigned char		uint8;
+	typedef uint8				uchar;
+
+	//int64//
+#ifdef _MSC_VER
+	typedef __int64				int64;
+	typedef unsigned __int64	uint64;
+#else
+	typedef signed long long	int64;
+	typedef unsigned long long	uint64;
+#endif
+
+#if defined(PLATFORM_WINDOWS)
+
+	typedef HWND                TWindowHandle;
+
+#elif defined(PLATFORM_LINUX)
+
+    typedef Window              TWindowHandle;
+
+#endif
+
 //Engine Base interface//
 
 	/** Engine base fundamental interface.
@@ -127,7 +137,7 @@ namespace JTS
 		/** Returns uniq identifier of the last interface in the inheritance chain.
 			\param[out] guid Uniq interface identifier.
 			\return Always returnes S_OK.
-		 */		
+		 */
 		virtual HRESULT CALLBACK GetGUID(GUID &guid) = 0;
 	};
 
@@ -135,12 +145,12 @@ namespace JTS
 #pragma pack( push, 1 )
 #endif
 
-	/** Flags of TWinMessage structure that determines type of the message. 
+	/** Flags of TWinMessage structure that determines type of the message.
 	\see TWinMessage
 	 */
 	enum E_WINDOW_MESSAGE_TYPE
 	{
-		WMT_UNKNOWN = 0,/**< This type will be returned if there is no proper conversion from platform specific window event to engine window message. Message parameters have platform specific usage. \note For Windows pParam3 of TWinMessage structure will point to the MSG structure. */
+		WMT_UNKNOWN = 0,/**< This type will be returned if there is no proper conversion from platform specific window event to engine window message. Message parameters have platform specific usage. \note For Windows pParam3 of TWinMessage structure will point to the MSG structure, for Linux will point to XEvent. */
 		WMT_REDRAW,		/**< Message indicates that window must redraw itself. Message parameters are not used. */
 		WMT_PRESENT,	/**< Message indicates that window is ready and now will be displayed to the user for the first time. Message parameters are not used. */
 		WMT_CLOSE,		/**< Message indicates that window is ready to be destroyed and now will disappear from the screen. Message parameters are not used. */
@@ -162,8 +172,8 @@ namespace JTS
 		WMT_MOUSE_WHEEL /**< Message indicates that the user has rolled mouse wheel. Message parameter pParam3 points to integer (int) with mouse wheel delta value. */
 	};
 
-	/** Unified and platform independent window event type. 
-	 */	
+	/** Unified and platform independent window event type.
+	 */
 	struct TWinMessage
 	{
 		E_WINDOW_MESSAGE_TYPE
@@ -171,7 +181,7 @@ namespace JTS
 		uint32	ui32Param1;	/**< Message first parametr. */
 		uint32	ui32Param2;	/**< Message second parametr. */
 		void	*pParam3;	/**< Message third parametr. Points to specific message data. */
-		
+
 		TWinMessage():uiMsgType(WMT_UNKNOWN), ui32Param1(0), ui32Param2(0), pParam3(NULL){}
 		TWinMessage(E_WINDOW_MESSAGE_TYPE msg, uint32 param1 = 0, uint32 param2 = 0, void *param3 = NULL):uiMsgType(msg), ui32Param1(param1), ui32Param2(param2), pParam3(param3){}
 	};
@@ -180,7 +190,7 @@ namespace JTS
 #pragma pack(pop)
 #endif
 
-	/** Engine initialization flags. 
+	/** Engine initialization flags.
 		\see IEngineCore::InitializeEngine
 	 */
 	enum E_ENGINE_INIT_FLAGS
@@ -191,7 +201,7 @@ namespace JTS
 		EIF_NO_LOGGING			= 0x00000004	/**< Means that engine logging will be turned off. */
 	};
 
-	/** Type of engine callbacks. 
+	/** Type of engine callbacks.
 		IEngineCore can register calbacks of these types.
 		\see IEngineCore::AddProcedure
 	 */
@@ -206,7 +216,7 @@ namespace JTS
 	class IInput;
 
 	// {111BB884-2BA6-4e84-95A5-5E4700309CBA}
-	static const GUID IID_IEngineCore = 
+	static const GUID IID_IEngineCore =
 	{ 0x111bb884, 0x2ba6, 0x4e84, { 0x95, 0xa5, 0x5e, 0x47, 0x0, 0x30, 0x9c, 0xba } };
 
 	/** Main engine interface.
@@ -222,12 +232,12 @@ namespace JTS
 		 \param[in] pcApplicationName Caption of main engine window.
 		 \param[in] eInitFlags Special engine configuration flags. \see E_ENGINE_INIT_FLAGS
 		 \return Common HRESULT return type.
-		 */		
+		 */
 		virtual HRESULT CALLBACK InitializeEngine(uint uiResX, uint uiResY, const char* pcApplicationName, E_ENGINE_INIT_FLAGS eInitFlags = EIF_DEFAULT ) = 0;
 		/** Sets engine interval of calling EPT_PROCESS user routine.
 		 \param[in] uiProcessInterval Interval in milliseconds.
 		*/
-		virtual HRESULT CALLBACK SetProcessInterval(uint uiProcessInterval) = 0;	
+		virtual HRESULT CALLBACK SetProcessInterval(uint uiProcessInterval) = 0;
 		/** Add main system procedure for internal engine calls.
 		 \param[in] eProcType Type of the procedure to be registered.
 		 \param[in] pProc Pointer to the procedure with specified signature.
@@ -241,7 +251,7 @@ namespace JTS
 		*/
 		virtual HRESULT CALLBACK RemoveProcedure(E_ENGINE_PROCEDURE_TYPE eProcType, void (CALLBACK *pProc)(void *pParametr), void *pParametr = NULL) = 0;
 		/** Closes main engine window and quits engine.
-		*/		
+		*/
 		virtual HRESULT CALLBACK QuitEngine() = 0;
 		/** Writes string to log file.
 		 \param[in] pcTxt Text to output.
@@ -253,11 +263,11 @@ namespace JTS
 		*/
 		virtual	HRESULT CALLBACK GetInput(IInput *&pInput) = 0;
 	};
-	
+
 	// {2363509D-BFB4-448E-89EE-B1E8EFCC1D41}
 	static const GUID IID_IRender =
 	{ 0x2363509d, 0xbfb4, 0x448e, { 0x89, 0xee, 0xb1, 0xe8, 0xef, 0xcc, 0x1d, 0x41 } };
-	
+
 	/** Engine render interface.
 	*/
 	class IRender : public IJTS_Base
@@ -265,12 +275,12 @@ namespace JTS
 	public:
 	};
 
-	/** Describes the state of the mouse. 
+	/** Describes the state of the mouse.
 		\see IInput
 	*/
 	struct TMouseStates
 	{
-		int	 iX;			/**< X coordinate of mouse pointer. */ 
+		int	 iX;			/**< X coordinate of mouse pointer. */
 		int	 iY;			/**< Y coordinate of mouse pointer. */
 		int	 iDeltaX;		/**< The difference between the current and previous X coordinate value. */
 		int	 iDeltaY;		/**< The difference between the current and previous Y coordinate value. */
@@ -290,10 +300,14 @@ namespace JTS
 		ICF_CURSOR_BEYOND_SCREEN	= 0x00000004  /**< Mouse will move through window borders and then dropped to opposite border. */
 	};
 
-	enum E_KEYBOARD_KEY_CODES;
+	enum E_KEYBOARD_KEY_CODES
+#ifndef _MSC_VER
+	 : uint8
+#endif
+	 ;
 
 	// {64DAAF7F-F92C-425f-8B92-3BE40D8C6666}
-	static const GUID IID_IInput = 
+	static const GUID IID_IInput =
 	{ 0x64daaf7f, 0xf92c, 0x425f, { 0x8b, 0x92, 0x3b, 0xe4, 0xd, 0x8c, 0x66, 0x66 } };
 
 	/** Engine input interface.
@@ -328,6 +342,9 @@ namespace JTS
 		\warning This is not common ASCII key codes!
 	*/
 	enum E_KEYBOARD_KEY_CODES
+#ifndef _MSC_VER
+	 : uint8
+#endif
 	{
 		KEY_ESCAPE			= 0x01,
 		KEY_TAB				= 0x0F,
@@ -453,7 +470,7 @@ namespace JTS
 	extern bool GetEngine(JTS::IEngineCore *&pEngineCore);
 
 	/** Deletes main engine class. Must be called just before exeting application.
-		*/		
+		*/
 	extern void FreeEngine();
 
 #endif //_JTS_ENG_H

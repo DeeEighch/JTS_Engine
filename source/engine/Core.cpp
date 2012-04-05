@@ -31,21 +31,19 @@ void FreeEngine()
 
 CCore::CCore():
 _pInput(NULL),
-_bDoExit(false),
-_uiProcessInterval(33)
+_uiProcessInterval(33),
+_bDoExit(false)
 {
 	_clDelMLoop.Add(&_s_MainLoop, this);
 	_clDelMProc.Add(&_s_MessageProc, this);
 
 	_pMainWindow = new CMainWindow(this);
-		
+
 	_pRender = new CRender(this);
 }
 
 CCore::~CCore()
 {
-	_pRender->Finalize();
-	
 	delete _pInput;
 
 	_pMainWindow->Free();
@@ -76,10 +74,10 @@ void CCore::_MainLoop()
 	bool flag = false;
 
 	uint cycles_cnt = (uint)(time_delta/_uiProcessInterval);
-		
-	for (int i = 0; i < cycles_cnt; i++)
+
+	for (uint i = 0; i < cycles_cnt; i++)
 	{
-		if (!_clDelProcess.IsNull()) 
+		if (!_clDelProcess.IsNull())
 			_clDelProcess.Invoke();
 
 		flag = true;
@@ -87,10 +85,8 @@ void CCore::_MainLoop()
 
 	if (flag)
 		_ui64TimeOld = time - time_delta % _uiProcessInterval;
-	
-	_pRender->StartFrame();
+
 	_clDelRender.Invoke();
-	_pRender->EndFrame();
 }
 
 void CCore::_MessageProc(const TWinMessage &stMsg)
@@ -109,7 +105,7 @@ void CCore::_MessageProc(const TWinMessage &stMsg)
 
 		AddToLog("Finalizing Engine...");
 
-		if (!_clDelFree.IsNull()) 
+		if (!_clDelFree.IsNull())
 		{
 			AddToLog("Calling user finalization procedure...");
 			_clDelFree.Invoke();
@@ -117,6 +113,7 @@ void CCore::_MessageProc(const TWinMessage &stMsg)
 		}
 
 		break;
+    default: break;
 	}
 }
 
@@ -148,20 +145,17 @@ HRESULT CALLBACK CCore::InitializeEngine(uint uiResX, uint uiResY, const char* p
 	{
 		_pMainWindow->SetCaption(pcApplicationName);
 
-		_pInput = new CInput(this);
-
 		if ( (eInitFlags & EIF_NATIVE_RESOLUTION) && (eInitFlags & EIF_FULL_SCREEN))
 			GetDisplaySize(uiResX, uiResY);
 
-		if (!_pRender->Initialize())
-			return E_ABORT;
-			
 		if (FAILED(_pMainWindow->ConfigureWindow(uiResX, uiResY, eInitFlags & EIF_FULL_SCREEN)))
 			return E_ABORT;
-		
+
+		_pInput = new CInput(this);
+
 		AddToLog("Engine initialized.");
 
-		if (!_clDelInit.IsNull()) 
+		if (!_clDelInit.IsNull())
 		{
 			AddToLog("Calling user initialization procedure...");
 			_clDelInit.Invoke();
@@ -245,7 +239,7 @@ HRESULT CALLBACK CCore::AddToLog(const char *pcTxt, bool bError)
 		_clLogFile.width(2);
 		_clLogFile << time.ui16Minute << ":";
 		_clLogFile.width(2);
-		_clLogFile << time.ui16Second << ".";	
+		_clLogFile << time.ui16Second << ".";
 		_clLogFile.width(3);
 		_clLogFile << time.ui16Milliseconds;
 		_clLogFile.width(0);

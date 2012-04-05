@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Jutos" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../../release/Jutos" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++0x" />
+					<Add option="-g" />
+					<Add option="-DGLEW_NO_GLU" />
+					<Add option="-DGLEW_STATIC" />
+					<Add directory="../../engine" />
+					<Add directory="../../engine/platform" />
+					<Add directory="../../engine/platform/linux" />
+					<Add directory="../../externs/glew" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="/usr/lib/i386-linux-gnu/libXrandr.so" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../../release/Jutos" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++0x" />
+					<Add option="-w" />
+					<Add option="-DGLEW_NO_GLU" />
+					<Add option="-DGLEW_STATIC" />
+					<Add directory="../../engine" />
+					<Add directory="../../engine/platform" />
+					<Add directory="../../engine/platform/linux" />
+					<Add directory="../../externs/glew/GL" />
+					<Add directory="../../externs/glew" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-m32" />
+					<Add library="/usr/lib/i386-linux-gnu/libXrandr.so" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="X11" />
+		</Linker>
+		<Unit filename="../../Main.cpp" />
+		<Unit filename="../../engine/Common.h" />
+		<Unit filename="../../engine/Core.cpp" />
+		<Unit filename="../../engine/Core.h" />
+		<Unit filename="../../engine/FuncDelegate.h" />
+		<Unit filename="../../engine/JTS_Eng.h" />
+		<Unit filename="../../engine/Render.cpp" />
+		<Unit filename="../../engine/Render.h" />
+		<Unit filename="../../engine/Utils.cpp" />
+		<Unit filename="../../engine/Utils.h" />
+		<Unit filename="../../engine/platform/PlatformAPI.h" />
+		<Unit filename="../../engine/platform/linux/Input.cpp" />
+		<Unit filename="../../engine/platform/linux/Input.h" />
+		<Unit filename="../../engine/platform/linux/MainWindow.cpp" />
+		<Unit filename="../../engine/platform/linux/MainWindow.h" />
+		<Unit filename="../../engine/platform/linux/PlatformUtils.cpp" />
+		<Unit filename="../../externs/glew/glew.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

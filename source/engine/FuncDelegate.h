@@ -5,11 +5,33 @@
 #include <vector>
 
 typedef void	(CALLBACK *TPProc)(void *pParametr),
-				(CALLBACK *TPMsgProc)(void *pParametr, const TWinMessage &stMsg);
+				(CALLBACK *TPMsgProc)(void *pParametr, const JTS::TWinMessage &stMsg);
+
+template<class T1, class T2>
+class TCFuncDelegate;
+
+#ifndef _MSC_VER
+template<typename F>
+class CFunctorImpl;
+
+template<typename F>
+class CFunctor: public CFunctorImpl<F>
+{
+	template<class T1, class T2>
+	friend class TCFuncDelegate;
+
+	// C++11 inheriting ctor
+	//using CFunctorImpl<F>::CFunctorImpl;
+	template<class T1, class T2>
+	CFunctor(TCFuncDelegate<T1, T2> &parent): CFunctorImpl<F>(parent) {}
+};
+#endif
 
 template<class T1, class T2>
 class TCFuncDelegate
 {
+	friend class CFunctorImpl<T2>;
+
 	bool _bAllowInvoke;
 
 	struct _TFunc
@@ -22,7 +44,7 @@ class TCFuncDelegate
 
 public:
 
-	TCFuncDelegate(): _bAllowInvoke(true){}
+	TCFuncDelegate(): _bAllowInvoke(true), Invoke(*this) {}
 
 	void AllowInvoke(bool bAllow)
 	{
@@ -52,9 +74,54 @@ public:
 			}
 	}
 
+#ifdef _MSC_VER
 	T2 Invoke;
+#else
+	CFunctor<T2> Invoke;
+#endif
 };
 
+#ifndef _MSC_VER
+template<class T1, class T2>
+class CFunctorBase
+{
+protected:
+	CFunctorBase(TCFuncDelegate<T1, T2> &parent): _parent(parent) {}
+	TCFuncDelegate<T1, T2> &_parent;
+};
+
+template<>
+class CFunctorImpl<void ()>: CFunctorBase<TPProc, void ()>
+{
+protected:
+	// C++11 inheriting ctor
+	//using CFunctorBase::CFunctorBase;
+	CFunctorImpl(TCFuncDelegate<TPProc, void ()> &parent): CFunctorBase(parent) {}
+public:
+	void operator ()()
+	{
+		if (_parent._bAllowInvoke)
+			for (std::size_t i = 0; i < _parent._funcList.size(); i++)
+				(*_parent._funcList[i].pFunc)(_parent._funcList[i].pParametr);
+	}
+};
+
+template<>
+class CFunctorImpl<void (const JTS::TWinMessage &)>: CFunctorBase<TPMsgProc, void (const JTS::TWinMessage &)>
+{
+protected:
+	// C++11 inheriting ctor
+	//using CFunctorBase::CFunctorBase;
+	CFunctorImpl(TCFuncDelegate<TPMsgProc, void (const JTS::TWinMessage &)> &parent): CFunctorBase(parent) {}
+public:
+	void operator ()(const JTS::TWinMessage &stMsg)
+	{
+		if (_parent._bAllowInvoke)
+			for (std::size_t i = 0; i < _parent._funcList.size(); i++)
+				(*_parent._funcList[i].pFunc)(_parent._funcList[i].pParametr, stMsg);
+	}
+};
+#else
 inline void TCFuncDelegate<TPProc, void ()>::Invoke()
 {
 	if (_bAllowInvoke)
@@ -68,6 +135,7 @@ inline void TCFuncDelegate<TPMsgProc, void (const JTS::TWinMessage &)>::Invoke(c
 		for (std::size_t i = 0; i < _funcList.size(); i++)
 			(*_funcList[i].pFunc)(_funcList[i].pParametr, stMsg);
 }
+#endif
 
 typedef TCFuncDelegate<TPProc, void ()> TProcDelegate;
 typedef TCFuncDelegate<TPMsgProc, void (const JTS::TWinMessage &)> TMsgProcDelegate;
