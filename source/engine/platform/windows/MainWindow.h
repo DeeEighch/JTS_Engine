@@ -1,5 +1,5 @@
-#ifndef _WINDOWAPI_H
-#define _WINDOWAPI_H
+#ifndef _MAINWINDOW_H
+#define _MAINWINDOW_H
 
 #include "Common.h"
 
@@ -9,8 +9,12 @@ class CMainWindow : public IMainWindow
 	HINSTANCE				_hInst;
 	HWND					_hWnd;
 	HDC						_hDC;
+	HGLRC					_hRC;
 	TProcDelegate			*_pDelMainLoop;
 	TMsgProcDelegate		*_pDelMessageProc;
+
+	const uint _c_uiMSAASamples;
+	const bool _c_bVSync;
 
 	bool					_bIsLooping;
 
@@ -34,4 +38,4 @@ public:
 
 };
 
-#endif //_WINDOWAPI_H
+#endif //_MAINWINDOW_H

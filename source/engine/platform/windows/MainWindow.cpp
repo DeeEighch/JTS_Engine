@@ -4,12 +4,24 @@
 CMainWindow::CMainWindow(IEngineCore *pEngineCore):
 _pEngineCore(pEngineCore),
 _hInst(GetModuleHandle(NULL)),
+_c_uiMSAASamples(4u), _c_bVSync(true),
 _hWnd(NULL),
+_hDC(NULL),
+_hRC(NULL),
 _bIsLooping(false)
 {}
 
 CMainWindow::~CMainWindow()
 {
+	if (_hRC)
+	{
+		if (!wglMakeCurrent(NULL, NULL))
+			_pEngineCore->AddToLog("Failed to release Device Context and Rendering Context.");
+
+		if (!wglDeleteContext(_hRC))
+			_pEngineCore->AddToLog("Failed to release Rendering Context.");
+	}
+
 	if (_hInst && UnregisterClass("JTSWindowClass", _hInst) == FALSE)
 	{
 		_hInst = NULL;
@@ -38,8 +50,15 @@ int CMainWindow::_wWinMain(HINSTANCE hInstance)
 				DispatchMessage (&st_msg);
 			}
 		}
-		else 
+		else
+		{
+	        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	        glLoadIdentity();
+
 			_pDelMainLoop->Invoke();
+	
+			SwapBuffers(_hDC);
+		}
 
 	_pDelMessageProc->Invoke(TWinMessage(WMT_RELEASED));
 
@@ -108,6 +127,147 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *pDelMainLoop, TMsgProcDelegate *p
 	}
 
 	SetWindowLongPtr(_hWnd, GWLP_USERDATA, (LONG_PTR)this);
+
+	uint msaa_samples = _c_uiMSAASamples;
+
+	PIXELFORMATDESCRIPTOR pfd=
+	{
+		sizeof(PIXELFORMATDESCRIPTOR),
+		1,											// Version Number
+		PFD_DRAW_TO_WINDOW |						// Format Must Support Window
+		PFD_SUPPORT_OPENGL |						// Format Must Support OpenGL
+		PFD_DOUBLEBUFFER,							// Must Support Double Buffering
+		PFD_TYPE_RGBA,								// Request An RGBA Format
+		32,											// Select Our Color Bits
+		0, 0, 0, 0, 0, 0,							// Per Color Bits and Shifts Ignored
+		8,											// Alpha Bits
+		0,											// Shift Bit Ignored
+		0,											// No Accumulation Buffer
+		0, 0, 0, 0,									// Accumulation Bits Ignored
+		24,											// 24 Bit Z-Buffer (Depth Buffer)
+		0,											// Stencil Buffer
+		0,											// No Auxiliary Buffer
+		PFD_MAIN_PLANE,								// Main Drawing Layer
+		0,											// Reserved
+		0, 0, 0										// Layer Masks Ignored
+	};
+
+	int pixel_format = NULL;
+
+	if (msaa_samples > 1)
+	{
+		HWND	temp_win_handle	= NULL;
+		HDC		temp_win_dc		= NULL;
+		HGLRC	temp_win_rc		= NULL;
+		int temp_pixel_format	= NULL;
+
+		if (
+		!(temp_win_handle = CreateWindowEx(0, "STATIC", NULL, 0, 0, 0, 0, 0, 0, 0, 0, NULL))||
+		!(temp_win_dc = GetDC(temp_win_handle))||
+		!(temp_pixel_format = ChoosePixelFormat(temp_win_dc, &pfd))||
+		!SetPixelFormat(temp_win_dc, temp_pixel_format, &pfd)||
+		!(temp_win_rc = wglCreateContext(temp_win_dc))||
+		!wglMakeCurrent(temp_win_dc, temp_win_rc)
+		)
+		{
+			msaa_samples = 1;
+			_pEngineCore->AddToLog("Error(s) while performing OpenGL MSAA preinit routine.");
+		}
+		else
+		{
+			if (string((char*)glGetString(GL_EXTENSIONS)).find("ARB_multisample") != string::npos)
+			{
+				int ia_attributes[] =
+				{
+					WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+					WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+					WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+					WGL_COLOR_BITS_ARB, 32,
+					WGL_ALPHA_BITS_ARB, 8,
+					WGL_DEPTH_BITS_ARB, 24,
+					WGL_STENCIL_BITS_ARB, 0,
+					WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+					WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
+					WGL_SAMPLES_ARB, msaa_samples,
+					0,0
+				};
+
+				float	fa_attributes[] = {0,0};
+				uint	formats_cnt;
+				int		tmp_pixel_format;
+
+				wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+				int valid = wglChoosePixelFormatARB(temp_win_dc, ia_attributes, fa_attributes, 1, &tmp_pixel_format, &formats_cnt);
+				wglChoosePixelFormatARB = NULL;
+
+				if (valid && formats_cnt >= 1)
+					pixel_format = tmp_pixel_format;
+				else
+				{
+					_pEngineCore->AddToLog(("Can't find suitable PixelFormat with required MSAA "+IntToStr(msaa_samples)+"X support.").c_str());
+					msaa_samples = 1;
+				}
+			}
+			else
+				msaa_samples = 1;
+		}
+
+		if (
+		!wglMakeCurrent(NULL, NULL)||
+		(temp_win_rc!=NULL&&!wglDeleteContext(temp_win_rc))||
+		(temp_win_dc!=NULL&&!ReleaseDC(temp_win_handle, temp_win_dc))||
+		(temp_win_handle!=NULL&&!DestroyWindow(temp_win_handle))
+		)
+			_pEngineCore->AddToLog("Can't free resources after performing OpenGL MSAA preinit routine.");
+	}
+
+	if (pixel_format == NULL && !(pixel_format = ChoosePixelFormat(_hDC, &pfd)))
+	{
+		_pEngineCore->AddToLog("Can't find a suitable PixelFormat.", true);
+		return E_ABORT;
+	}
+
+	if (!SetPixelFormat(_hDC, pixel_format, &pfd))
+	{
+		_pEngineCore->AddToLog("Can't set PixelFormat.", true);
+		return E_ABORT;
+	}
+
+	if (!(_hRC = wglCreateContext(_hDC)))
+	{
+		_pEngineCore->AddToLog("Can't create GL Rendering Context.", true);
+		return E_ABORT;
+	}
+
+	if(!wglMakeCurrent(_hDC, _hRC))
+	{
+		_pEngineCore->AddToLog("Can't active GL Rendering Context.", true);
+		return E_ABORT;
+	}
+
+	GLenum glew_res = glewInit();
+
+	if(glew_res != GLEW_OK)
+	{
+		string cause = "";
+
+		switch(glew_res)
+		{
+			case GLEW_ERROR_NO_GL_VERSION:
+				cause = "Reason: Can't get OpenGL version.";
+				break;
+			case GLEW_ERROR_GL_VERSION_10_ONLY:
+				cause = "Reason: OpenGL 1.1 or higher required.";
+				break;
+		}
+
+		_pEngineCore->AddToLog(("Can't initialize OpenGL Extension Wrangler. " + cause).c_str(), true);
+
+		return E_ABORT;
+	}
+
+	if (WGLEW_EXT_swap_control && _c_bVSync)
+		wglSwapIntervalEXT(1);
 
 	_pEngineCore->AddToLog("Window created successfully.");
 

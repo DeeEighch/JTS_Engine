@@ -30,7 +30,9 @@ class CFunctor: public CFunctorImpl<F>
 template<class T1, class T2>
 class TCFuncDelegate
 {
+#ifndef _MSC_VER
 	friend class CFunctorImpl<T2>;
+#endif
 
 	bool _bAllowInvoke;
 
@@ -44,7 +46,11 @@ class TCFuncDelegate
 
 public:
 
-	TCFuncDelegate(): _bAllowInvoke(true), Invoke(*this) {}
+	TCFuncDelegate(): _bAllowInvoke(true)
+#ifndef _MSC_VER
+		, Invoke(*this)
+#endif
+	{}
 
 	void AllowInvoke(bool bAllow)
 	{

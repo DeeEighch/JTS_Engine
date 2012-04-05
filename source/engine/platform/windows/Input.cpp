@@ -71,36 +71,45 @@ void CInput::_Loop()
 		
 		_pCore->GetWindow()->GetClientRect(i_win_left, i_win_right, i_win_top, i_win_bottom);
 
+		bool flag = false;
+
 		if (p.x >= i_win_right - 1)
 		{
+				flag = true;
 				p.x = i_win_left + 1;
 				_uiOldMouseX = -(i_win_right - i_win_left - _stMsts.iX);
 		}
 
 		if (p.x <= i_win_left)
 		{
+				flag = true;
 				p.x = i_win_right - 2;
 				_uiOldMouseX = i_win_right + _stMsts.iX - i_win_left;
 		}
 
 		if (p.y >= i_win_bottom - 1)
 		{
+				flag = true;				
 				p.y = i_win_top + 1;
 				_uiOldMouseY = -(i_win_bottom - i_win_top - _stMsts.iY);
 		}
 
 		if (p.y <= i_win_top)
 		{		
+				flag = true;
 				p.y = i_win_bottom - 2;
 				_uiOldMouseY = i_win_bottom + _stMsts.iY - i_win_top;
 		}
 
-		SetCursorPos(p.x,p.y);
+		if (flag)
+		{
+			SetCursorPos(p.x,p.y);
 		
-		ScreenToClient(_hWnd, &p);
+			ScreenToClient(_hWnd, &p);
 
-		_stMsts.iX = p.x;
-		_stMsts.iY = p.y;
+			_stMsts.iX = p.x;
+			_stMsts.iY = p.y;
+		}
 	}
 }
 

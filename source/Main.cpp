@@ -68,14 +68,18 @@ int main(int argc, char **argv)
 		pEngineCore->AddProcedure(JTS::EPT_PROCESS, &Process);
 		pEngineCore->AddProcedure(JTS::EPT_RENDER, &Render);
 
-		if (FAILED(pEngineCore->InitializeEngine(800, 600, "Jutos",
+		JTS::E_ENGINE_INIT_FLAGS flags = JTS::EIF_DEFAULT;
+
+		if(
 #ifdef PLATFORM_WINDOWS
 			MessageBoxA(NULL, "Would you like to run in FullScreen mode?", "Start FullScreen?", MB_YESNO | MB_ICONQUESTION) == IDYES
 #else
             argc > 1 && (strcmp(argv[1], "--fscreen") == 0 || strcmp(argv[1], "-f") == 0)
 #endif
-			? JTS::E_ENGINE_INIT_FLAGS(JTS::EIF_FULL_SCREEN | JTS::EIF_NATIVE_RESOLUTION) : JTS::EIF_DEFAULT
-			)))
+			)
+			flags = JTS::E_ENGINE_INIT_FLAGS(JTS::EIF_FULL_SCREEN | JTS::EIF_NATIVE_RESOLUTION);
+
+		if (FAILED(pEngineCore->InitializeEngine(800, 600, "Jutos", flags)))
 			pEngineCore->AddToLog("Failed to initialize engine!", true);
 
 		FreeEngine();

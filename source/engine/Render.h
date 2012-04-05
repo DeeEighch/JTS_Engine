@@ -11,16 +11,6 @@ class CRender : public IRender
 
 	const float	_c_fFov, _c_fZNear, _c_fZFar;
 
-#if defined(PLATFORM_WINDOWS)
-
-	HWND	_hWnd;
-	HDC		_hDC;
-	HGLRC	_hRC;
-
-#elif defined(PLATFORM_LINUX)
-
-#endif
-
 	void _MessageProc(const TWinMessage &stMsg);
 	void _OnResize(int width, int height);
 

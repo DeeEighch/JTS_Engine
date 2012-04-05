@@ -70,12 +70,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\release\</OutDir>
-    <IncludePath>..\..\externs\glew\GL;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\externs\glew;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\release\</OutDir>
-    <IncludePath>..\..\externs\glew\GL;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\externs\glew;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
